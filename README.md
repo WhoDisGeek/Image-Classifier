@@ -18,6 +18,7 @@ Create Folder Structure
 
 cd /Project/ \
 python3 NDJ-Image.py /Project/Data \
+ls Data/CNN-Total/ > Data/Classes.txt \
 python2 Split-Data.py /Project/Data \
 python3 Train-CNN.py \
 python3 Test-CNN.py   --> This is Optional
