@@ -1,3 +1,9 @@
+import sys
+import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = sys.argv[2]
+
+
 from keras.models import Sequential
 from keras.layers import Convolution2D, Convolution1D, MaxPooling2D, MaxPooling1D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
@@ -9,21 +15,19 @@ from keras.layers.advanced_activations import PReLU
 from keras.layers.normalization import BatchNormalization
 import json
 import h5py
-import os
 import _pickle as cPickle
-import sys
 import shutil
 from keras import backend as K
 K.set_image_dim_ordering('tf')
 
-from CNN import New_model as CNN
 
-folder = './Data'
+from CNN import New_model as CNN
+folder = sys.argv[1]
 train = folder + '/Train'
 val = folder + '/Validate'
 
 nb_epoch = 50
-img_height, img_width = 256,256
+img_height, img_width = 128,128
 
 train_datagen = ImageDataGenerator(
         rotation_range=40,
@@ -56,7 +60,7 @@ model, model_name = CNN(train_generator.num_classes)
 
 model_dir = folder + '/' + model_name + '/'
 os.mkdir(model_dir)
-temp_path = model_dir + 'CNN-Inter.h5'
+temp_path = model_dir + 'temp_model.h5'
 
 checkpointer = ModelCheckpoint(filepath=temp_path, verbose=1, save_best_only=True)
 
@@ -69,9 +73,11 @@ output = model.fit_generator(
                                 nb_val_samples=val_generator.samples,
                                 callbacks=[checkpointer])
 
-model.save(model_dir + 'CNN.h5')
+model.save(model_dir + 'final_model.h5')
 
-model.save_weights("Weights.h5")
+model_json = model.to_json()
+with open(model_dir + "model.json", "w") as json_file:
+    json_file.write(model_json)
+
+model.save_weights("weights_file.h5")
 print("Saved model to disk")    
-
-
