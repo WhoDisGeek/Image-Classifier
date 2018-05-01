@@ -14,11 +14,12 @@ import shutil
 
 
 def main(sketch_path=None, as_submodule=False):
-    model = load_model('/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+"Data/CNN/CNN-Inter-Feature.h5")
+    model = load_model(
+        '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + "Data/CNN/CNN-Inter-Feature.h5")
 
-    rootdir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+'Data/Vectors'
+    rootdir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + 'Data/Vectors'
 
-    with open('/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+'Data/Classes.txt') as f:
+    with open('/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + 'Data/Classes.txt') as f:
         classes = f.read().splitlines()
 
     if as_submodule:
@@ -74,7 +75,7 @@ def main(sketch_path=None, as_submodule=False):
         i = i + 1
 
     filelist = []
-    imagedir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+'Data/Images'
+    imagedir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + 'Data/Images'
     for subdir, dirs, files in os.walk(imagedir):
         for file in files:
             path = os.path.join(subdir, file)
@@ -89,15 +90,16 @@ def main(sketch_path=None, as_submodule=False):
             if path in y:
                 target_images_list.append(x)
                 source_images_list.append(y)
-    final_list=[]
+    final_list = []
     if as_submodule:
         from sketchtoimage.settings import MEDIA_ROOT
         # copy the final images into this dir
         target_images_path = os.path.join(MEDIA_ROOT, 'cnn1_output')
         for x in range(0, len(target_images_list)):
             shutil.copyfile(source_images_list[x],
-                            target_images_path + '/target_' + predicted_classname + '_' + target_images_list[x]+'.jpg')
-            final_list.append('target_' + predicted_classname + '_' + target_images_list[x]+'.jpg')
+                            target_images_path + '/target_' + predicted_classname + '_' +
+                            target_images_list[x] + '.jpg')
+            final_list.append('target_' + predicted_classname + '_' + target_images_list[x] + '.jpg')
         return {
             'classname': predicted_classname,
             'target_images_list': final_list,
