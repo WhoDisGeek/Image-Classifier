@@ -12,12 +12,13 @@ from numpy.linalg import norm
 import operator
 import shutil
 
+
 def main(sketch_path=None, as_submodule=False):
-    model = load_model("./Data/CNN/CNN-Inter-Feature.h5")
+    model = load_model('/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+"Data/CNN/CNN-Inter-Feature.h5")
 
-    rootdir = './Data/Vectors'
+    rootdir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+'Data/Vectors'
 
-    with open('./Data/Classes.txt') as f:
+    with open('/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+'Data/Classes.txt') as f:
         classes = f.read().splitlines()
 
     if as_submodule:
@@ -25,7 +26,7 @@ def main(sketch_path=None, as_submodule=False):
         sketch_path = os.path.join(MEDIA_ROOT, 'input_sketches', sketch_path)
 
     image = cv2.imread(sketch_path, 0)
-    image = cv2.resize(image, (256, 256))
+    image = cv2.resize(image, (128, 128))
     image = image.astype("float") / 255.0
     image = img_to_array(image)
     image = np.expand_dims(image, axis=0)
@@ -64,6 +65,8 @@ def main(sketch_path=None, as_submodule=False):
         for x in classes:
             if x in sortvector[i][0]:
                 end = sortvector[i][0].find('-')
+                if end < 0:
+                    end = sortvector[i][0].find('.')
                 start = sortvector[i][0].find('/') + 1
                 race[x].add(sortvector[i][0][start:end])
                 if len(race[x]) == 10:
@@ -71,32 +74,33 @@ def main(sketch_path=None, as_submodule=False):
         i = i + 1
 
     filelist = []
-    imagedir = './Data/Images'
+    imagedir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/'+'Data/Images'
     for subdir, dirs, files in os.walk(imagedir):
         for file in files:
             path = os.path.join(subdir, file)
             filelist.append(path)
-	
-	target_images_list = []
-	source_images_list = []
-	predicted_classname = finish
+
+    target_images_list = []
+    source_images_list = []
+    predicted_classname = finish
     for x in race[finish]:
         path = finish + "/" + x
         for y in filelist:
             if path in y:
                 target_images_list.append(x)
-				source_images_list.append(y)
-
+                source_images_list.append(y)
+    final_list=[]
     if as_submodule:
         from sketchtoimage.settings import MEDIA_ROOT
         # copy the final images into this dir
         target_images_path = os.path.join(MEDIA_ROOT, 'cnn1_output')
-		for x in range(0,len(target_images_list)):
-			shutil.copyfile(source_images_list[x], target_images_path+'/target_'+predicted_classname+'_'+target_images_list[x])
-		
+        for x in range(0, len(target_images_list)):
+            shutil.copyfile(source_images_list[x],
+                            target_images_path + '/target_' + predicted_classname + '_' + target_images_list[x]+'.jpg')
+            final_list.append('target_' + predicted_classname + '_' + target_images_list[x]+'.jpg')
         return {
             'classname': predicted_classname,
-            'target_images_list': target_images_list,
+            'target_images_list': final_list,
         }
 
 
