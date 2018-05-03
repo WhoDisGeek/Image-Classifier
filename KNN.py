@@ -99,6 +99,7 @@ def main(sketch_path=None, as_submodule=False):
         from sketchtoimage.settings import MEDIA_ROOT
         # copy the final images into this dir
         target_images_path = os.path.join(BASE_DIR, MEDIA_ROOT, 'cnn1_output')
+        os.makedirs(target_images_path, exist_ok=True)
         for x in range(0, len(target_images_list)):
             shutil.copyfile(source_images_list[x],
                             target_images_path + '/target_' + predicted_classname + '_' +
