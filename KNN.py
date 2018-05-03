@@ -11,15 +11,18 @@ from numpy import dot
 from numpy.linalg import norm
 import operator
 import shutil
+from sketchtoimage.settings import SKETCH_RECOGNIZER_PATH
 
 
 def main(sketch_path=None, as_submodule=False):
-    model = load_model(
-        '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + "Data/CNN/CNN-Inter-Feature.h5")
+    model = load_model(os.path.join(
+        SKETCH_RECOGNIZER_PATH, "Data/CNN/CNN-Inter-Feature.h5"))
 
-    rootdir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + 'Data/Vectors'
+    rootdir = os.path.join(
+        SKETCH_RECOGNIZER_PATH, 'Data/Vectors')
 
-    with open('/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + 'Data/Classes.txt') as f:
+    with open(os.path.join(
+            SKETCH_RECOGNIZER_PATH, 'Data/Classes.txt')) as f:
         classes = f.read().splitlines()
 
     if as_submodule:
@@ -75,7 +78,8 @@ def main(sketch_path=None, as_submodule=False):
         i = i + 1
 
     filelist = []
-    imagedir = '/home/prime/Django-Projects/SketchToImage/app/sketch_recognizer/recognizer/' + 'Data/Images'
+    imagedir = os.path.join(
+        SKETCH_RECOGNIZER_PATH, 'Data/Images')
     for subdir, dirs, files in os.walk(imagedir):
         for file in files:
             path = os.path.join(subdir, file)
