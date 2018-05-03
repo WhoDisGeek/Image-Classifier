@@ -11,7 +11,7 @@ from numpy import dot
 from numpy.linalg import norm
 import operator
 import shutil
-from sketchtoimage.settings import SKETCH_RECOGNIZER_PATH
+from sketchtoimage.settings import SKETCH_RECOGNIZER_PATH, BASE_DIR
 
 
 def main(sketch_path=None, as_submodule=False):
@@ -27,7 +27,7 @@ def main(sketch_path=None, as_submodule=False):
 
     if as_submodule:
         from sketchtoimage.settings import MEDIA_ROOT
-        sketch_path = os.path.join(MEDIA_ROOT, 'input_sketches', sketch_path)
+        sketch_path = os.path.join(BASE_DIR, MEDIA_ROOT, 'input_sketches', sketch_path)
 
     image = cv2.imread(sketch_path, 0)
     image = cv2.resize(image, (128, 128))
@@ -98,7 +98,7 @@ def main(sketch_path=None, as_submodule=False):
     if as_submodule:
         from sketchtoimage.settings import MEDIA_ROOT
         # copy the final images into this dir
-        target_images_path = os.path.join(MEDIA_ROOT, 'cnn1_output')
+        target_images_path = os.path.join(BASE_DIR, MEDIA_ROOT, 'cnn1_output')
         for x in range(0, len(target_images_list)):
             shutil.copyfile(source_images_list[x],
                             target_images_path + '/target_' + predicted_classname + '_' +
